@@ -5,6 +5,15 @@
         select name from tbl_customer where name like '%' #{name} '%'
     </select>
 
+    <select id="getByName" resultType="com.dljd.crm.beans.Contacts">
+        select * from tbl_contacts
+        <where>
+            <if test="name!=null and name != ''">
+                name like '%' #{name} '%'
+            </if>
+        </where>
+    </select>
+
     <insert id="add">
         insert into tbl_contacts(id,owner,source,appellation,fullName,email,job,mphone,description,birth,customerId,createBy,createTime,contactSummary,nextContactTime,address) values (#{id},#{owner},#{source},#{appellation},#{fullName},#{email},#{job},#{mphone},#{description},#{birth},#{customerId},#{createBy},#{createTime},#{contactSummary},#{nextContactTime},#{address})
     </insert>

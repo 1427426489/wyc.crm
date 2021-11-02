@@ -44,4 +44,11 @@
         select count(*)
         <include refid="searchGet"/>
     </select>
+
+    <insert id="add">
+        insert into tbl_transaction
+        (id,owner,amountOfMoney,name,expectedClosingDate,customerId,stage,type,source,activityId,contactsId,description,createBy,createTime,contactSummary,nextContactTime)
+        values
+        (#{id},#{owner},#{amountOfMoney},#{name},#{expectedClosingDate},#{customerId},#{stage},#{type},#{source},#{activityId},#{contactsId},#{description},#{createBy},#{createTime},#{contactSummary},#{nextContactTime})
+    </insert>
 </mapper>

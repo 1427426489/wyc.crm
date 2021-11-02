@@ -11,4 +11,6 @@ public interface TransactionMapper {
     List<Transaction> getSome(@Param("beginRow") int beginRow, @Param("rowsPerPage") int rowsPerPage,@Param("searchMap") Map searchMap);
 
     int getCount(@Param("searchMap") Map searchMap);
+
+    int add(Transaction transaction);
 }

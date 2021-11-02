@@ -36,4 +36,9 @@ public class ContactsServiceImpl implements ContactsService {
         contacts.setBirth(birth);
         return contactsMapper.add(contacts);
     }
+
+    @Override
+    public List<Contacts> getByName(String name) {
+        return contactsMapper.getByName(name);
+    }
 }

@@ -8,4 +8,6 @@ public interface ContactsService {
     List<String> getCustomerName(String name);
 
     int add(Contacts contacts);
+
+    List<Contacts> getByName(String name);
 }

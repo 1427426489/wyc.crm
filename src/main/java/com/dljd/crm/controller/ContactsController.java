@@ -52,4 +52,10 @@ public class ContactsController {
             put("success",true);
         }};
     }
+
+    @RequestMapping("/getByName")
+    @ResponseBody
+    public List<Contacts> getByName(String name){
+        return contactsService.getByName(name);
+    }
 }

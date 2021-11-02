@@ -1,13 +1,18 @@
 package com.dljd.crm.services;
 
+import com.dljd.crm.beans.Customer;
 import com.dljd.crm.beans.Page;
 import com.dljd.crm.beans.Transaction;
 import com.dljd.crm.beans.Value;
+import com.dljd.crm.mapper.CustomerMapper;
 import com.dljd.crm.mapper.TransactionMapper;
 import com.dljd.crm.mapper.TypeMapper;
+import com.dljd.crm.util.LocalDateTimeUtil;
+import com.dljd.crm.util.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +24,8 @@ public class TransactionServiceImpl implements TransactionService {
     private TransactionMapper transactionMapper;
     @Autowired
     private TypeMapper typeMapper;
+    @Autowired
+    private CustomerMapper customerMapper;
 
     @Override
     public Page getSome(Page page) {
@@ -33,13 +40,38 @@ public class TransactionServiceImpl implements TransactionService {
         return page;
     }
 
+    @Override
+    public int add(Transaction transaction) {
+        transaction.setId(UUIDUtil.getUUID());
+        String createTime = LocalDateTimeUtil.localToStr(LocalDateTime.now());
+        transaction.setCreateTime(createTime);
+        //判断客户是否存在，不存在则新建
+        String customerId = customerMapper.getIdByName(transaction.getCustomerName());
+        //存在
+        if (customerId != null && !"".equals(customerId)){
+            transaction.setCustomerId(customerId);
+            return transactionMapper.add(transaction);
+        }
+        //不存在
+        Customer customer = new Customer();
+        customerId = UUIDUtil.getUUID();
+        customer.setId(customerId);
+        customer.setOwner(transaction.getOwner());
+        customer.setName(transaction.getCustomerName());
+        customer.setCreateBy(transaction.getCreateBy());
+        customer.setCreateTime(createTime);
+        customerMapper.add(customer);
+        transaction.setCustomerId(customerId);
+        return transactionMapper.add(transaction);
+    }
+
     //获取阶段和可能性对应关系的Map集合
     @Override
     public Map<String, String> getStage2possiMap() {
-        Map<String,String> stage2possiMap = new HashMap<>();
+        Map<String, String> stage2possiMap = new HashMap<>();
         List<Value> stages = typeMapper.get("stage").getValues();
         for (Value stage : stages) {
-            stage2possiMap.put(stage.getValue(),"10%");
+            stage2possiMap.put(stage.getValue(), "10%");
         }
         return stage2possiMap;
     }
