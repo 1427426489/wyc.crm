@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dljd.crm.mapper.ValueMapper">
+    <cache/>
+
+    <resultMap id="value" type="com.dljd.crm.beans.Value">
+        <id column="id" property="id"/>
+        <result column="value" property="value"/>
+        <result column="text" property="text"/>
+        <result column="orderNo" property="orderNo"/>
+        <result column="typeCode" property="typeCode"/>
+        <association property="type" javaType="com.dljd.crm.beans.Type">
+            <id column="code" property="code"/>
+            <result column="name" property="name"/>
+            <result column="description" property="description"/>
+        </association>
+    </resultMap>
+
+    <sql id="sel_value_type_inner">
+        select v.*,t.* from tbl_dictionary_value v inner join tbl_dictionary_type t on v.typeCode = t.code
+    </sql>
+
+    <sql id="orderBy">
+         order by typeCode,orderNo
+    </sql>
+
+    <select id="get" resultType="value">
+        <include refid="sel_value_type_inner"/>
+        where id = #{id};
+    </select>
+
+    <select id="getAll" resultMap="value">
+        <include refid="sel_value_type_inner"/>
+        <include refid="orderBy"/>
+    </select>
+
+    <insert id="add">
+        insert into tbl_dictionary_value(id,value,text,orderNo,typeCode) values (#{id},#{value},#{text},#{orderNo},#{typeCode});
+    </insert>
+
+    <delete id="delete">
+        delete from tbl_dictionary_value where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="update">
+        update tbl_dictionary_value set value = #{value},text = #{text},orderNo = #{orderNo},typeCode = #{typeCode} where id = #{id};
+    </update>
+</mapper>

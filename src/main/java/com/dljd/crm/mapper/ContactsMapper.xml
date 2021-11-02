@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dljd.crm.mapper.ContactsMapper">
+    <select id="getCustomerName" resultType="java.lang.String">
+        select name from tbl_customer where name like '%' #{name} '%'
+    </select>
+
+    <insert id="add">
+        insert into tbl_contacts(id,owner,source,appellation,fullName,email,job,mphone,description,birth,customerId,createBy,createTime,contactSummary,nextContactTime,address) values (#{id},#{owner},#{source},#{appellation},#{fullName},#{email},#{job},#{mphone},#{description},#{birth},#{customerId},#{createBy},#{createTime},#{contactSummary},#{nextContactTime},#{address})
+    </insert>
+</mapper>

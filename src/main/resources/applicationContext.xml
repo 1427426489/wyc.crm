@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/aop
+       https://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+">
+    <!--组件扫描-->
+    <context:component-scan base-package="com.dljd.crm.services"/>
+    <context:component-scan base-package="com.dljd.crm.beans"/>
+    <context:component-scan base-package="com.dljd.crm.mapper"/>
+    <context:component-scan base-package="com.dljd.crm.aop"/>
+
+    <!--导入外部资源-->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+
+    <!--启动AspectJ注解驱动-->
+    <aop:aspectj-autoproxy/>
+
+    <!--配置数据源-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+
+    <!--spring整合MyBatis-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:mybatis.xml"/>
+        <property name="typeAliasesPackage" value="com.dljd.crm.beans"/>
+    </bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <property name="basePackage" value="com.dljd.crm.mapper"/>
+    </bean>
+
+    <!--声明事务管理器-->
+    <bean id="transactionalManage" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!--配置事务控制切面-->
+    <tx:advice id="transactionAdvice" transaction-manager="transactionalManage">
+        <tx:attributes>
+            <!--所有的查询方法只读，支持事务-->
+            <tx:method name="get*" propagation="SUPPORTS" read-only="true"/>
+            <!--其他所有方法只能在事务内执行,默认隔离级别,发生任何异常回滚-->
+            <tx:method name="*" propagation="REQUIRED" isolation="DEFAULT" rollback-for="java.lang.Exception"/>
+        </tx:attributes>
+    </tx:advice>
+    <!--配置通知和切入点-->
+    <aop:config>
+        <aop:pointcut id="allService" expression="execution(* *..services..*(..))"/>
+        <!--声明增强器：通知和切入点的组合-->
+        <aop:advisor advice-ref="transactionAdvice" pointcut-ref="allService"/>
+    </aop:config>
+
+</beans>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dljd.crm.mapper.TransactionMapper">
+
+    <sql id="searchGet">
+        from tbl_transaction t
+        left join tbl_customer cus on t.customerId = cus.id
+        left join tbl_contacts con on t.contactsId = con.id
+        <where>
+            <if test="searchMap.owner != null and searchMap.owner != '' ">
+                t.owner like '%' #{searchMap.owner} '%'
+            </if>
+            <if test="searchMap.name != null and searchMap.name != '' ">
+                and t.name like '%' #{searchMap.name} '%'
+            </if>
+            <if test="searchMap.customerName != null and searchMap.customerName != '' ">
+                and cus.name like '%' #{searchMap.customerName} '%'
+            </if>
+            <if test="searchMap.stage != null and searchMap.stage != '' ">
+                and t.stage like '%' #{searchMap.stage} '%'
+            </if>
+            <if test="searchMap.type != null and searchMap.type != '' ">
+                and t.type like '%' #{searchMap.type} '%'
+            </if>
+            <if test="searchMap.source != null and searchMap.source != '' ">
+                and t.source like '%' #{searchMap.source} '%'
+            </if>
+            <if test="searchMap.contactsName != null and searchMap.contactsName != '' ">
+                and con.fullName like '%' #{searchMap.contactsName} '%'
+            </if>
+        </where>
+    </sql>
+
+
+
+    <select id="getSome" resultType="com.dljd.crm.beans.Transaction">
+        select t.*,cus.name customerName,con.fullName contactsName
+        <include refid="searchGet"/>
+        order by t.name
+        limit #{beginRow},#{rowsPerPage}
+    </select>
+
+    <select id="getCount" resultType="int">
+        select count(*)
+        <include refid="searchGet"/>
+    </select>
+</mapper>

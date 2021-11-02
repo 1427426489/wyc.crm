@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dljd.crm.mapper.ActivityMapper">
+
+    <sql id="sel">
+        select * from tbl_marketing_activities
+    </sql>
+
+    <sql id="orderBy">
+        order by createTime,startTime
+    </sql>
+
+    <sql id="insert">
+        insert into tbl_marketing_activities(id,owner,name,startDate,endDate,cost,description,createBy,createTime) values
+    </sql>
+
+    <sql id="searchGet">
+        <where>
+            <if test="searchMap.name != null and searchMap.name != ''">
+                name like '%' #{searchMap.name} '%'
+            </if>
+            <if test="searchMap.owner != null and searchMap.owner != ''">
+                and owner like '%' #{searchMap.owner} '%'
+            </if>
+            <if test="searchMap.startDate != null and searchMap.startDate != ''">
+                and startDate &gt;= #{searchMap.startDate}
+            </if>
+            <if test="searchMap.endDate != null and searchMap.endDate != ''">
+                and endDate &lt;= #{searchMap.endDate}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getSome" resultType="com.dljd.crm.beans.Activity">
+        <include refid="sel"/>
+        <include refid="searchGet"/>
+        limit #{beginRow},#{rowsPerPage}
+    </select>
+
+    <select id="getCount" resultType="int">
+        select count(*) from tbl_marketing_activities
+        <include refid="searchGet"/>
+    </select>
+
+    <select id="get" resultType="com.dljd.crm.beans.Activity">
+        <include refid="sel"/>
+        where id = #{id}
+    </select>
+
+    <select id="getAll" resultType="com.dljd.crm.beans.Activity">
+        <include refid="sel"/>
+    </select>
+
+    <select id="getLikeByName" resultType="com.dljd.crm.beans.Activity">
+        <include refid="sel"/>
+        where name like '%' #{actName} '%'
+    </select>
+
+    <insert id="add">
+        <include refid="insert"/>
+        (#{id},#{owner},#{name},#{startDate},#{endDate},#{cost},#{description},#{createBy},#{createTime})
+    </insert>
+
+    <insert id="addAll">
+        <include refid="insert"/>
+        <foreach collection="list" item="activity" open="(" close=")" separator="),(">
+            #{activity.id},#{activity.owner},#{activity.name},#{activity.startDate},#{activity.endDate},#{activity.cost},#{activity.description},#{activity.createBy},#{activity.createTime}
+        </foreach>
+    </insert>
+
+    <delete id="delete">
+        delete from tbl_marketing_activities where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="update">
+        update tbl_marketing_activities set owner=#{owner},name=#{name},startDate=#{startDate},endDate=#{endDate},cost=#{cost},description=#{description},editBy=#{editBy},editTime=#{editTime} where id = #{id}
+    </update>
+
+    <!--在写mybatis的关联查询时，resultMap中如果两个对象有相同的属性。查询出来的结果**内层的对象的属性会被外层对象属性覆盖**，导致内层list数据出错。-->
+    <resultMap id="activity_remark" type="com.dljd.crm.beans.Activity">
+        <id column="id" property="id"/>
+        <result column="owner" property="owner"/>
+        <result column="name" property="name"/>
+        <result column="startDate" property="startDate"/>
+        <result column="endDate" property="endDate"/>
+        <result column="cost" property="cost"/>
+        <result column="description" property="description"/>
+        <result column="createBy" property="createBy"/>
+        <result column="createTime" property="createTime"/>
+        <result column="editBy" property="editBy"/>
+        <result column="editTime" property="editTime"/>
+        <collection property="remarks" javaType="java.util.List" ofType="com.dljd.crm.beans.ActRemark" >
+            <id column="m_id" property="id"/>
+            <result column="notePerson" property="notePerson"/>
+            <result column="noteContent" property="noteContent"/>
+            <result column="noteTime" property="noteTime"/>
+            <result column="editPerson" property="editPerson"/>
+            <result column="editTime" property="editTime"/>
+            <result column="editFlag" property="editFlag"/>
+            <result column="marketingActivitiesId" property="marketingActivitiesId"/>
+        </collection>
+    </resultMap>
+
+    <select id="getRemark" resultMap="activity_remark">
+        select a.*,m.id m_id,m.notePerson,m.noteContent,m.noteTime,m.editPerson,m.editTime,m.editFlag,m.marketingActivitiesId from tbl_marketing_activities a left join tbl_marketing_activities_remark m on a.id = m.marketingActivitiesId where a.id = #{id} order by m.noteTime
+    </select>
+
+    <insert id="addActRemark">
+        insert into
+        tbl_marketing_activities_remark
+        (id,notePerson,noteContent,noteTime,editFlag,marketingActivitiesId)
+        value
+        (#{id},#{notePerson},#{noteContent},#{noteTime},#{editFlag},#{marketingActivitiesId})
+    </insert>
+
+    <update id="updateActRemark">
+        update tbl_marketing_activities_remark set noteContent=#{noteContent},editPerson=#{editPerson},editTime=#{editTime},editFlag=#{editFlag} where id = #{id};
+    </update>
+
+    <delete id="deleteActRemark">
+        delete from tbl_marketing_activities_remark where id = #{id}
+    </delete>
+</mapper>

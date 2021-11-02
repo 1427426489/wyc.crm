@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dljd.crm.mapper.CustomerMapper">
+    <sql id="sel">
+        select * from tbl_customer
+    </sql>
+
+    <sql id="orderBy">
+        order by name
+    </sql>
+
+    <sql id="insert">
+        insert into tbl_customer(id,owner,name,phone,website,description,createBy,createTime,contactSummary,nextContactTime,address) values
+    </sql>
+
+    <select id="get" resultType="com.dljd.crm.beans.Customer">
+        <include refid="sel"/>
+        where id = #{id}
+    </select>
+
+    <select id="getSome" resultType="com.dljd.crm.beans.Customer">
+        <include refid="sel"/>
+        <where>
+            <if test="searchMap.name != null and searchMap.name != ''">
+                name like '%' #{searchMap.name} '%'
+            </if>
+            <if test="searchMap.owner != null and searchMap.owner != ''">
+                and owner like '%' #{searchMap.owner} '%'
+            </if>
+            <if test="searchMap.phone != null and searchMap.phone != ''">
+                and phone like '%' #{searchMap.phone} '%'
+            </if>
+            <if test="searchMap.website != null and searchMap.website != ''">
+                and website like '%' #{searchMap.website} '%'
+            </if>
+        </where>
+        <include refid="orderBy"/>
+        limit #{beginRow},#{rowsPerPage}
+    </select>
+
+    <select id="getCount" resultType="int">
+        select count(*) from tbl_customer
+    </select>
+
+    <select id="getByName" resultType="com.dljd.crm.beans.Customer">
+        <include refid="sel"/>
+        where name = #{name}
+    </select>
+
+    <select id="getAll" resultType="com.dljd.crm.beans.Customer">
+        <include refid="sel"/>
+        <include refid="orderBy"/>
+    </select>
+
+    <insert id="add">
+        <include refid="insert"/>
+        (#{id},#{owner},#{name},#{phone},#{website},#{description},#{createBy},#{createTime},#{contactSummary},#{nextContactTime},#{address})
+    </insert>
+
+    <delete id="delete">
+        delete from tbl_customer where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="update">
+        update tbl_customer set owner=#{owner},name=#{name},phone=#{phone},website=#{website},description=#{description},editBy=#{editBy},editTime=#{editTime},contactSummary=#{contactSummary},nextContactTime=#{nextContactTime},address=#{address} where id = #{id}
+    </update>
+
+    <select id="getRemarks" resultType="com.dljd.crm.beans.CustomerRemark">
+        select * from tbl_customer_remark where customerId = #{id}
+    </select>
+
+    <select id="getIdByName" resultType="java.lang.String">
+        select id from tbl_customer where name = #{name}
+    </select>
+</mapper>

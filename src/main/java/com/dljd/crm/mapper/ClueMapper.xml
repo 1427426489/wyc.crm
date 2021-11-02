@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dljd.crm.mapper.ClueMapper">
+    <sql id="sel">
+        select * from tbl_clue
+    </sql>
+
+    <sql id="orderBy">
+        order by company
+    </sql>
+
+    <sql id="insert">
+        insert into tbl_clue(id,owner,company,phone,website,description,fullName,appellation,source,email,mphone,job,state,createBy,createTime,contactSummary,nextContactTime,address)
+        values
+    </sql>
+
+    <sql id="searchGet">
+        <where>
+            <if test="searchMap.fullName != null and searchMap.fullName != '' ">
+                fullName like '%' #{searchMap.fullName} '%'
+            </if>
+            <if test="searchMap.company != null and searchMap.company != '' ">
+                and company like '%' #{searchMap.company} '%'
+            </if>
+            <if test="searchMap.phone != null and searchMap.phone != '' ">
+                and phone like '%' #{searchMap.phone} '%'
+            </if>
+            <if test="searchMap.source != null and searchMap.source != '' ">
+                and source like '%' #{searchMap.source} '%'
+            </if>
+            <if test="searchMap.owner != null and searchMap.owner != '' ">
+                and owner like '%' #{searchMap.owner} '%'
+            </if>
+            <if test="searchMap.mphone != null and searchMap.mphone != '' ">
+                and mphone like '%' #{searchMap.mphone} '%'
+            </if>
+            <if test="searchMap.state != null and searchMap.state != '' ">
+                and state like '%' #{searchMap.state} '%'
+            </if>
+        </where>
+    </sql>
+
+    <select id="get" resultType="com.dljd.crm.beans.Clue">
+        <include refid="sel"/>
+        where id = #{id}
+    </select>
+
+    <select id="getSome" resultType="com.dljd.crm.beans.Clue">
+        <include refid="sel"/>
+        <include refid="searchGet"/>
+        <include refid="orderBy"/>
+        limit #{beginRow},#{rowsPerPage}
+    </select>
+
+    <select id="getCount" resultType="int">
+        select count(*) from tbl_clue
+        <include refid="searchGet"/>
+    </select>
+
+    <select id="getAll" resultType="com.dljd.crm.beans.Clue">
+        <include refid="sel"/>
+        <include refid="orderBy"/>
+    </select>
+
+    <insert id="add">
+        <include refid="insert"/>
+        (#{id},#{owner},#{company},#{phone},#{website},#{description},#{fullName},#{appellation},#{source},#{email},#{mphone},#{job},#{state},#{createBy},#{createTime},#{contactSummary},#{nextContactTime},#{address})
+    </insert>
+
+    <insert id="addAll">
+        <include refid="insert"/>
+        <foreach collection="list" item="clue" open="(" close=")" separator="),(">
+            #{clue.id},#{clue.owner},#{clue.company},#{clue.phone},#{clue.website},#{clue.description},#{clue.fullName},#{clue.appellation},#{clue.source},#{clue.email},#{clue.mphone},#{clue.job},#{clue.state},#{clue.createBy},#{clue.createTime},#{clue.contactSummary},#{clue.nextContactTime},#{clue.address}
+        </foreach>
+    </insert>
+
+    <delete id="delete">
+        delete from tbl_clue where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="update">
+        update tbl_clue set owner = #{owner}, company = #{company}, phone = #{phone}, website = #{website}, description = #{description}, fullName = #{fullName}, appellation = #{appellation}, source = #{source}, email = #{email}, mphone = #{mphone}, job = #{job}, state = #{state}, editBy = #{editBy}, editTime = #{editTime}, contactSummary = #{contactSummary}, nextContactTime = #{nextContactTime}, address = #{address} where id = #{id}
+    </update>
+    
+    <!--线索备注相关操作-->
+    <select id="getRemarks" resultType="com.dljd.crm.beans.ClueRemark">
+        select * from tbl_clue_remark where clueId = #{id} order by noteTime desc
+    </select>
+
+    <insert id="addRemark">
+        insert into tbl_clue_remark(id,notePerson,noteContent,noteTime,editFlag,clueId)
+        values (#{id},#{notePerson},#{noteContent},#{noteTime},#{editFlag},#{clueId})
+    </insert>
+
+    <update id="updateRemark">
+        update tbl_clue_remark set noteContent=#{noteContent}, editPerson=#{editPerson}, editTime=#{editTime}, editFlag=#{editFlag} where id = #{id}
+    </update>
+
+    <delete id="deleteRemark">
+        delete from tbl_clue_remark where id = #{id}
+    </delete>
+
+    <!--线索关联市场活动相关操作-->
+    <select id="getActivities" resultType="com.dljd.crm.beans.Activity">
+        select a.* from tbl_marketing_activities a inner join tbl_clue_activity_relation ca on a.id = ca.activityId where ca.clueId = #{id}
+    </select>
+
+    <delete id="deleteClueActRelation">
+        delete from tbl_clue_activity_relation where clueId = #{clueId} and activityId = #{actId}
+    </delete>
+
+    <delete id="deleteByClueId">
+        delete from tbl_clue_activity_relation where clueId = #{clueId}
+    </delete>
+
+    <insert id="addClueActivity">
+        insert into tbl_clue_activity_relation(id,clueId,activityId) values (#{id},#{clueId},#{activityId})
+    </insert>
+</mapper>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dljd.crm.mapper.TypeMapper">
+    <!--开启二级缓存-->
+    <cache/>
+    <!--关联其他命名空间的缓存，使两个命名空间使用同一个cache对象，无论哪个mapper文件执行了DML语句，都会重新执行查询操作-->
+    <cache-ref namespace="com.dljd.crm.mapper.ValueMapper"/>
+
+    <sql id="sel_type">
+        select t.*,v.* from tbl_dictionary_type t left join tbl_dictionary_value v on t.code = v.typeCode
+    </sql>
+
+    <sql id="orderBy">
+        order by code
+    </sql>
+
+    <resultMap id="type" type="com.dljd.crm.beans.Type">
+        <id column="code" property="code"/>
+        <result column="name" property="name"/>
+        <result column="description" property="description"/>
+        <collection property="values" javaType="java.util.List" ofType="com.dljd.crm.beans.Value">
+            <id column="id" property="id"/>
+            <result column="value" property="value"/>
+            <result column="text" property="text"/>
+            <result column="orderNo" property="orderNo"/>
+            <result column="typeCode" property="typeCode"/>
+        </collection>
+    </resultMap>
+
+    <select id="get" resultMap="type">
+        <include refid="sel_type"/>
+         where t.code = #{code};
+    </select>
+
+    <select id="getAll" resultMap="type">
+        <include refid="sel_type"/>
+        <include refid="orderBy"/>
+    </select>
+
+    <insert id="add">
+        insert into tbl_dictionary_type(code,name,description) values (#{code},#{name},#{description});
+    </insert>
+
+    <delete id="delete">
+        delete from tbl_dictionary_type where code in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="update">
+        update tbl_dictionary_type set name = #{name},description = #{description} where code = #{code};
+    </update>
+</mapper>

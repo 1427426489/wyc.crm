@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dljd.crm.mapper.DeptMapper">
+    <sql id="sel">
+        select * from tbl_dept
+    </sql>
+
+    <sql id="orderBy">
+        order by no
+    </sql>
+
+    <select id="get" resultType="com.dljd.crm.beans.Dept">
+        <include refid="sel"/>
+        where id = #{id}
+        <include refid="orderBy"/>
+    </select>
+
+    <select id="getByNo" resultType="com.dljd.crm.beans.Dept">
+        <include refid="sel"/>
+        where no = #{no}
+    </select>
+
+    <select id="getSome" resultType="com.dljd.crm.beans.Dept">
+        <include refid="sel"/>
+        <include refid="orderBy"/>
+        limit #{beginRow},#{rowsPerPage}
+    </select>
+
+    <select id="getAll" resultType="com.dljd.crm.beans.Dept">
+        <include refid="sel"/>
+        <include refid="orderBy"/>
+    </select>
+
+    <select id="getCount" resultType="int">
+        select count(*) from tbl_dept
+    </select>
+
+    <insert id="add">
+        insert into tbl_dept(id,no,name,manager,description,phone) values (#{id},#{no},#{name},#{manager},#{description},#{phone})
+    </insert>
+
+    <delete id="delete">
+        delete from tbl_dept where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="update">
+        update tbl_dept set no = #{no},name = #{name},manager = #{manager},description = #{description},phone = #{phone} where id = #{id};
+    </update>
+</mapper>
