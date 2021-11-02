@@ -1,6 +1,7 @@
 package com.dljd.crm.controller;
 
 import com.dljd.crm.beans.Page;
+import com.dljd.crm.beans.TransHistory;
 import com.dljd.crm.beans.Transaction;
 import com.dljd.crm.beans.User;
 import com.dljd.crm.services.TransactionService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.List;
 
 @Controller
 @RequestMapping("/tran")
@@ -61,6 +63,23 @@ public class TransactionController {
         model.addAttribute("stageList",typeService.get("stage").getValues());
         model.addAttribute("transactionTypeList",typeService.get("transaction").getValues());
         model.addAttribute("sourceList",typeService.get("source").getValues());
+    }
+
+    @RequestMapping("/detailView")
+    public String detailView(){
+        return "workbench/transaction/detail";
+    }
+
+    @RequestMapping("/get.json")
+    @ResponseBody
+    public Transaction get(String id){
+        return transactionService.get(id);
+    }
+
+    @RequestMapping("/getHistory.json")
+    @ResponseBody
+    public List<TransHistory> getHistory(String id){
+        return transactionService.getHistory(id);
     }
 
 }

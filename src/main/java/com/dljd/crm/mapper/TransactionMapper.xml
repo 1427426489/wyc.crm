@@ -45,10 +45,28 @@
         <include refid="searchGet"/>
     </select>
 
+    <resultMap id="trans" type="com.dljd.crm.beans.Transaction">
+        <result column="customerId" property="customerId"/>
+        <result column="activityId" property="activityId"/>
+        <result column="contactsId" property="contactsId"/>
+        <!--分步查询，查询语句可以是其他mapper文件的方法id-->
+        <association property="customer" column="customerId" select="com.dljd.crm.mapper.CustomerMapper.get"/>
+        <association property="activity" column="activityId" select="com.dljd.crm.mapper.ActivityMapper.get"/>
+        <association property="contacts" column="contactsId" select="com.dljd.crm.mapper.ContactsMapper.get"/>
+    </resultMap>
+
+    <select id="get" resultMap="trans">
+        select * from tbl_transaction where id = #{id}
+    </select>
+
     <insert id="add">
         insert into tbl_transaction
         (id,owner,amountOfMoney,name,expectedClosingDate,customerId,stage,type,source,activityId,contactsId,description,createBy,createTime,contactSummary,nextContactTime)
         values
         (#{id},#{owner},#{amountOfMoney},#{name},#{expectedClosingDate},#{customerId},#{stage},#{type},#{source},#{activityId},#{contactsId},#{description},#{createBy},#{createTime},#{contactSummary},#{nextContactTime})
     </insert>
+
+    <select id="getHistory" resultType="com.dljd.crm.beans.TransHistory">
+        select * from tbl_transaction_history where transactionId = #{id}
+    </select>
 </mapper>

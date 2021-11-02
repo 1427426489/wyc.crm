@@ -5,6 +5,10 @@
         select name from tbl_customer where name like '%' #{name} '%'
     </select>
 
+    <select id="get" resultType="com.dljd.crm.beans.Contacts">
+        select * from tbl_customer where id = #{id}
+    </select>
+
     <select id="getByName" resultType="com.dljd.crm.beans.Contacts">
         select * from tbl_contacts
         <where>

@@ -1,9 +1,6 @@
 package com.dljd.crm.services;
 
-import com.dljd.crm.beans.Customer;
-import com.dljd.crm.beans.Page;
-import com.dljd.crm.beans.Transaction;
-import com.dljd.crm.beans.Value;
+import com.dljd.crm.beans.*;
 import com.dljd.crm.mapper.CustomerMapper;
 import com.dljd.crm.mapper.TransactionMapper;
 import com.dljd.crm.mapper.TypeMapper;
@@ -41,6 +38,11 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    public Transaction get(String id) {
+        return transactionMapper.get(id);
+    }
+
+    @Override
     public int add(Transaction transaction) {
         transaction.setId(UUIDUtil.getUUID());
         String createTime = LocalDateTimeUtil.localToStr(LocalDateTime.now());
@@ -63,6 +65,11 @@ public class TransactionServiceImpl implements TransactionService {
         customerMapper.add(customer);
         transaction.setCustomerId(customerId);
         return transactionMapper.add(transaction);
+    }
+
+    @Override
+    public List<TransHistory> getHistory(String id) {
+        return transactionMapper.getHistory(id);
     }
 
     //获取阶段和可能性对应关系的Map集合

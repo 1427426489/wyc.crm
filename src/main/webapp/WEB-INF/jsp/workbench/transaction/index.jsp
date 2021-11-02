@@ -106,7 +106,7 @@
 
             $("#dataBody").on("click", "a[detail]", function () {
                 // alert( $(this).attr("detail") );
-                location = "/tran/detail.html?id=" + $(this).attr("detail");
+                location = "/tran/detailView?id=" + $(this).attr("detail");
             });
         });
 

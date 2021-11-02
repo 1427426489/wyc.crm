@@ -1,5 +1,6 @@
 package com.dljd.crm.mapper;
 
+import com.dljd.crm.beans.TransHistory;
 import com.dljd.crm.beans.Transaction;
 import org.apache.ibatis.annotations.Param;
 
@@ -13,4 +14,8 @@ public interface TransactionMapper {
     int getCount(@Param("searchMap") Map searchMap);
 
     int add(Transaction transaction);
+
+    Transaction get(String id);
+
+    List<TransHistory> getHistory(String id);
 }
