@@ -20,9 +20,7 @@ public class TransactionController {
 
     @RequestMapping("/indexView")
     public String indexView(Model model){
-        model.addAttribute("stageList",typeService.get("stage").getValues());
-        model.addAttribute("transactionTypeList",typeService.get("transaction").getValues());
-        model.addAttribute("sourceList",typeService.get("source").getValues());
+        addTypeListToModel(model);
         return "/workbench/transaction/index";
     }
 
@@ -31,4 +29,19 @@ public class TransactionController {
     public Page getPage(Page page){
         return transactionService.getSome(page);
     }
+
+    @RequestMapping("/saveView")
+    public String saveView(Model model){
+        addTypeListToModel(model);
+        model.addAttribute("stage2possiMap",transactionService.getStage2possiMap());
+        return "workbench/transaction/save";
+    }
+
+
+    private void addTypeListToModel(Model model){
+        model.addAttribute("stageList",typeService.get("stage").getValues());
+        model.addAttribute("transactionTypeList",typeService.get("transaction").getValues());
+        model.addAttribute("sourceList",typeService.get("source").getValues());
+    }
+
 }

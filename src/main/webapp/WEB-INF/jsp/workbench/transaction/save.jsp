@@ -43,6 +43,7 @@
                 source: function (keyword, process) {
                     // keyword: 输入框中值
                     $.get("/contacts/getCustomerName.json?name=" + keyword, function (data) {
+                        console.log(data)
                         // ["公司名1", "公司名2", ...]
                         process(data);
                     }, "json");
@@ -101,7 +102,7 @@
             });
 
             function loadContacts() {
-                // 加载所有市场活动
+                // 加载所有联系人
                 $("#contactsDataBody").html("");
                 $.ajax({
                     url: "/contacts/getByName.json?contactsName="+$("#contactsName").val(),
@@ -199,7 +200,7 @@
                         success: function (data) {
                             if (data.success) {
                                 $.alert("操作成功！");
-                                location = "index.html";
+                                location = "/tran/indexView";
                             }
                         }
                     })
