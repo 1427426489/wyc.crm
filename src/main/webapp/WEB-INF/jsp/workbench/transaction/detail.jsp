@@ -68,6 +68,7 @@
             <c:forEach items="${stage2possiMap}" var="entry">
             stage2possiObj["${entry.key}"] = ${entry.value};
             </c:forEach>
+            console.log(stage2possiObj)
 
             // 加载交易信息
             $.ajax({
@@ -85,10 +86,11 @@
 
                         if ( property == "amountOfMoney" ) {
                             // 123456789.123123 ===>  123,456,789.123123
-                            return tran.amountOfMoney.replace(/\B(?<!(\.\d+))(?=(\d{3})+\b)/g, ",");
+                            //replace()函数使用时先把内容强转为字符串类型
+                            return tran.amountOfMoney.toString().replace(/\B(?<!(\.\d+))(?=(\d{3})+\b)/g, ",");
                         }
 
-                        //console.log("tran." + property);
+                        // console.log("tran." + property);
                         // eval函数会把字符串当做JavaScript解析
                         return eval("tran." + property);
                     });
@@ -239,7 +241,7 @@
                             $("#dataBody").append('\
                             <tr>\
                                 <td>'+this.stage+'</td>\
-                                <td>'+this.amountOfMoney.replace(/\B(?<!(\.\d+))(?=(\d{3})+\b)/g, ",")+'</td>\
+                                <td>'+this.amountOfMoney.toString().replace(/\B(?<!(\.\d+))(?=(\d{3})+\b)/g, ",")+'</td>\
                                 <td>'+stage2possiObj[this.stage]+'</td>\
                                 <td>'+this.expectedClosingDate+'</td>\
                                 <td>'+this.editTime+'</td>\

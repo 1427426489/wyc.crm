@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/tran")
@@ -42,8 +43,7 @@ public class TransactionController {
     @RequestMapping("/saveView")
     public String saveView(Model model){
         addTypeListToModel(model);
-        //todo 添加阶段和可能性对应关系有问题
-//        model.addAttribute("stage2possiMap",transactionService.getStage2possiMap());
+        model.addAttribute("stage2possiMap",transactionService.getStage2possiMap());
         return "workbench/transaction/save";
     }
 
@@ -66,7 +66,9 @@ public class TransactionController {
     }
 
     @RequestMapping("/detailView")
-    public String detailView(){
+    public String detailView(Model model){
+        model.addAttribute("stage2possiMap",transactionService.getStage2possiMap());
+        model.addAttribute("stageList",typeService.get("stage").getValues());
         return "workbench/transaction/detail";
     }
 
@@ -82,4 +84,14 @@ public class TransactionController {
         return transactionService.getHistory(id);
     }
 
+    @RequestMapping("/changeStage.do")
+    @ResponseBody
+    public Map<String,Object> changeStage(String id,String stage){
+        User user = (User) session.getAttribute("user");
+        String editBy = user.getName();
+        transactionService.changeStage(id,stage,editBy);
+        return new HashMap<String, Object>(){{
+            put("success",true);
+        }};
+    }
 }

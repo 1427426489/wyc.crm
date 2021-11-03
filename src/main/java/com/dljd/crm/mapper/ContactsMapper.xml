@@ -6,7 +6,7 @@
     </select>
 
     <select id="get" resultType="com.dljd.crm.beans.Contacts">
-        select * from tbl_customer where id = #{id}
+        select * from tbl_contacts where id = #{id}
     </select>
 
     <select id="getByName" resultType="com.dljd.crm.beans.Contacts">

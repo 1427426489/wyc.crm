@@ -17,5 +17,12 @@ public interface TransactionMapper {
 
     Transaction get(String id);
 
+    int updateStage(@Param("id") String id,
+                    @Param("stage") String stage,
+                    @Param("editBy") String editBy,
+                    @Param("editTime") String editTime);
+
     List<TransHistory> getHistory(String id);
+
+    int addHistory(TransHistory transHistory);
 }

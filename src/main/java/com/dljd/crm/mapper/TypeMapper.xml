@@ -29,7 +29,8 @@
 
     <select id="get" resultMap="type">
         <include refid="sel_type"/>
-         where t.code = #{code};
+         where t.code = #{code}
+         order by v.orderNo
     </select>
 
     <select id="getAll" resultMap="type">

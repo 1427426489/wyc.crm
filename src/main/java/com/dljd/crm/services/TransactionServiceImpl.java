@@ -72,13 +72,31 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionMapper.getHistory(id);
     }
 
+    @Override
+    public int changeStage(String id, String stage, String editBy) {
+        String nowTime = LocalDateTimeUtil.localToStr(LocalDateTime.now());
+        //添加阶段历史
+        Transaction transaction = transactionMapper.get(id);
+        TransHistory transHistory = new TransHistory();
+        transHistory.setId(UUIDUtil.getUUID());
+        transHistory.setStage(stage);
+        transHistory.setAmountOfMoney(transaction.getAmountOfMoney());
+        transHistory.setExpectedClosingDate(transaction.getExpectedClosingDate());
+        transHistory.setEditBy(editBy);
+        transHistory.setEditTime(nowTime);
+        transHistory.setTransactionId(id);
+        transactionMapper.addHistory(transHistory);
+        //修改交易阶段
+        return transactionMapper.updateStage(id,stage,editBy,nowTime);
+    }
+
     //获取阶段和可能性对应关系的Map集合
     @Override
     public Map<String, String> getStage2possiMap() {
         Map<String, String> stage2possiMap = new HashMap<>();
         List<Value> stages = typeMapper.get("stage").getValues();
         for (Value stage : stages) {
-            stage2possiMap.put(stage.getValue(), "10%");
+            stage2possiMap.put(stage.getValue(), Integer.toString(stage.getOrderNo()*10));
         }
         return stage2possiMap;
     }

@@ -16,6 +16,8 @@ public interface TransactionService {
 
     List<TransHistory> getHistory(String id);
 
+    int changeStage(String id,String stage,String editBy);
+
     //阶段和可能性的对应关系
     Map<String,String> getStage2possiMap();
 }
