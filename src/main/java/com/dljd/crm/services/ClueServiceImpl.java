@@ -2,6 +2,9 @@ package com.dljd.crm.services;
 
 import com.dljd.crm.beans.*;
 import com.dljd.crm.mapper.ClueMapper;
+import com.dljd.crm.mapper.ContactsMapper;
+import com.dljd.crm.mapper.CustomerMapper;
+import com.dljd.crm.mapper.TransactionMapper;
 import com.dljd.crm.util.LocalDateTimeUtil;
 import com.dljd.crm.util.UUIDUtil;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -26,6 +29,12 @@ public class ClueServiceImpl implements ClueService {
     private ClueMapper clueMapper;
     @Autowired
     private HttpSession session;
+    @Autowired
+    private CustomerMapper customerMapper;
+    @Autowired
+    private ContactsMapper contactsMapper;
+    @Autowired
+    private TransactionMapper transactionMapper;
 
     @Override
     public Clue get(String id) {
@@ -42,7 +51,7 @@ public class ClueServiceImpl implements ClueService {
         int currentPage = page.getCurrentPage();
         int rowsPerPage = page.getRowsPerPage();
         int beginRow = (currentPage - 1) * rowsPerPage;
-        page.setData(clueMapper.getSome(beginRow, rowsPerPage,page.getSearchMap()));
+        page.setData(clueMapper.getSome(beginRow, rowsPerPage, page.getSearchMap()));
         int totalRows = clueMapper.getCount(page.getSearchMap());
         page.setTotalRows(totalRows);
         int totalPages = totalRows % rowsPerPage == 0 ? (totalRows / rowsPerPage) : (totalRows / rowsPerPage) + 1;
@@ -61,7 +70,7 @@ public class ClueServiceImpl implements ClueService {
         //通过Excel文件对象获取表单
         HSSFSheet sheet = workbook.getSheetAt(0);
         //从表单第二行开始遍历表单
-        for (int i = 1; i < sheet.getLastRowNum()+1; i++) {
+        for (int i = 1; i < sheet.getLastRowNum() + 1; i++) {
             HSSFRow row = sheet.getRow(i);
             Clue clue = new Clue();
             String name = row.getCell(0).getStringCellValue();
@@ -167,7 +176,7 @@ public class ClueServiceImpl implements ClueService {
     //解除线索与市场活动的关联
     @Override
     public int unbind(String clueId, String actId) {
-        return clueMapper.deleteClueActRelation(clueId,actId);
+        return clueMapper.deleteClueActRelation(clueId, actId);
     }
 
     @Override
@@ -185,6 +194,65 @@ public class ClueServiceImpl implements ClueService {
             clueMapper.addClueActivity(clueActivity);
             count++;
         }
+        return count;
+    }
+
+    //转换功能
+    @Override
+    public int convert(String clueId, Transaction transaction, String createBy) {
+        int count = 0;
+        //查询线索
+        Clue clue = clueMapper.get(clueId);
+        String nowTime = LocalDateTimeUtil.localToStr(LocalDateTime.now());
+        //添加客户
+        Customer customer = new Customer();
+        String customerId = UUIDUtil.getUUID();
+        customer.setId(customerId);
+        customer.setOwner(clue.getOwner());
+        customer.setName(clue.getCompany());
+        customer.setPhone(clue.getPhone());
+        customer.setWebsite(clue.getWebsite());
+        customer.setDescription(clue.getDescription());
+        customer.setCreateBy(createBy);
+        customer.setCreateTime(nowTime);
+        count += customerMapper.add(customer);
+
+        //添加联系人
+        Contacts contacts = new Contacts();
+        String contactsId = UUIDUtil.getUUID();
+        contacts.setId(contactsId);
+        contacts.setOwner(clue.getOwner());
+        contacts.setSource(clue.getSource());
+        contacts.setAppellation(clue.getAppellation());
+        contacts.setFullName(clue.getFullName());
+        contacts.setEmail(clue.getEmail());
+        contacts.setJob(clue.getJob());
+        contacts.setMphone(clue.getMphone());
+        contacts.setDescription(clue.getDescription());
+        contacts.setCustomerId(customerId);
+        contacts.setCreateBy(createBy);
+        contacts.setCreateTime(nowTime);
+        count += contactsMapper.add(contacts);
+
+        //判断用户是否创建交易
+        //添加交易
+        if (transaction.getName() != null) {
+            transaction.setId(UUIDUtil.getUUID());
+            transaction.setOwner(clue.getOwner());
+            transaction.setCustomerId(customerId);
+            transaction.setSource(clue.getSource());
+            transaction.setType("新业务");
+            transaction.setContactsId(contactsId);
+            transaction.setDescription(clue.getDescription());
+            transaction.setCreateBy(createBy);
+            transaction.setCreateTime(nowTime);
+            count += transactionMapper.add(transaction);
+        }
+
+        //删除线索、线索备注和线索关联活动表的数据
+        count += clueMapper.deleteByClueId(clueId);
+        count += clueMapper.deleteRemarkByClueId(clueId);
+        count += clueMapper.delete(new String[]{clueId});
         return count;
     }
 

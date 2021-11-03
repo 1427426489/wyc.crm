@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/clue")
@@ -189,6 +190,23 @@ public class ClueController {
         clueService.bind(clueId,actIds);
         return new HashMap<String, Object>() {{
             put("success", true);
+        }};
+    }
+
+    @RequestMapping("/convertView")
+    public String convertView(Model model){
+        model.addAttribute("stageList",typeService.get("stage").getValues());
+        return "workbench/clue/convert";
+    }
+
+    @RequestMapping("/convert.do")
+    @ResponseBody
+    public Map<String,Object> convertDo(String clueId,Transaction transaction){
+        User user = (User) session.getAttribute("user");
+        String createBy = user.getName();
+        clueService.convert(clueId,transaction,createBy);
+        return new HashMap<String, Object>(){{
+            put("success",true);
         }};
     }
 }

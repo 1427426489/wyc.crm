@@ -1,9 +1,6 @@
 package com.dljd.crm.services;
 
-import com.dljd.crm.beans.Activity;
-import com.dljd.crm.beans.Clue;
-import com.dljd.crm.beans.ClueRemark;
-import com.dljd.crm.beans.Page;
+import com.dljd.crm.beans.*;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,4 +30,6 @@ public interface ClueService extends BaseService<Clue,String> {
 
     //关联市场活动
     int bind(String clueId,String[] actIds);
+
+    int convert(String clueId, Transaction transaction,String createBy);
 }

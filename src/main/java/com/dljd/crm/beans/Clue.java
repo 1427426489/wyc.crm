@@ -30,5 +30,4 @@ public class Clue implements Serializable {
     private String contactSummary;
     private String nextContactTime;
     private String address;
-
 }

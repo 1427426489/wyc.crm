@@ -32,4 +32,6 @@ public interface ClueMapper extends BaseMapper<Clue,String> {
     int deleteByClueId(String clueId);
 
     int addClueActivity(ClueActivity clueActivity);
+
+    int deleteRemarkByClueId(String clueId);
 }

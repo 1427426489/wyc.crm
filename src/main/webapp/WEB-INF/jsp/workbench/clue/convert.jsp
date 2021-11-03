@@ -109,7 +109,7 @@
                             if(data.success) {
                                 // 回到线索首页
                                 $.alert("转换成功！", function () {
-                                    location = "/workbench/clue/index.html";
+                                    location = "/clue/indexView";
                                 });
                             }
                         }

@@ -103,6 +103,10 @@
         delete from tbl_clue_remark where id = #{id}
     </delete>
 
+    <delete id="deleteRemarkByClueId">
+        delete from tbl_clue_remark where clueId = #{clueId}
+    </delete>
+
     <!--线索关联市场活动相关操作-->
     <select id="getActivities" resultType="com.dljd.crm.beans.Activity">
         select a.* from tbl_marketing_activities a inner join tbl_clue_activity_relation ca on a.id = ca.activityId where ca.clueId = #{id}
