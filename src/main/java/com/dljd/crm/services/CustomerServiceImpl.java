@@ -1,8 +1,6 @@
 package com.dljd.crm.services;
 
-import com.dljd.crm.beans.Customer;
-import com.dljd.crm.beans.CustomerRemark;
-import com.dljd.crm.beans.Page;
+import com.dljd.crm.beans.*;
 import com.dljd.crm.mapper.CustomerMapper;
 import com.dljd.crm.util.LocalDateTimeUtil;
 import com.dljd.crm.util.UUIDUtil;
@@ -70,6 +68,16 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public List<CustomerRemark> getRemarks(String id) {
         return customerMapper.getRemarks(id);
+    }
+
+    @Override
+    public List<Contacts> getContacts(String id) {
+        return customerMapper.getContactsByCustomerId(id);
+    }
+
+    @Override
+    public List<Transaction> getTransactions(String id) {
+        return customerMapper.getTransactionsByCustomerId(id);
     }
 
 

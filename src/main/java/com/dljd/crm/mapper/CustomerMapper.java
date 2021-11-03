@@ -1,7 +1,9 @@
 package com.dljd.crm.mapper;
 
+import com.dljd.crm.beans.Contacts;
 import com.dljd.crm.beans.Customer;
 import com.dljd.crm.beans.CustomerRemark;
+import com.dljd.crm.beans.Transaction;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -17,4 +19,8 @@ public interface CustomerMapper extends BaseMapper<Customer,String> {
     List<CustomerRemark> getRemarks(String id);
 
     String getIdByName(String name);
+
+    List<Contacts> getContactsByCustomerId(String customerId);
+
+    List<Transaction> getTransactionsByCustomerId(String customerId);
 }

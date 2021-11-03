@@ -104,7 +104,7 @@
 					$(data).each(function () {
 						var item = '\
 						<tr>\
-							<td><a href="/contacts/detail.html" style="text-decoration: none;">{{fullName}}</a></td>\
+							<td><a href="/contacts/detailView?id={{id}}" style="text-decoration: none;">{{fullName}}</a></td>\
 							<td>{{email}}</td>\
 							<td>{{mphone}}</td>\
 							<td>\
@@ -143,7 +143,7 @@
 					$(data).each(function () {
 						var item ='\
 						<tr>\
-							<td><a href="/transaction/detail.html" style="text-decoration: none;">{{name}}</a></td>\
+							<td><a href="/tran/detailView?id={{id}}" style="text-decoration: none;">{{name}}</a></td>\
 							<td>{{amountOfMoney}}</td>\
 							<td>{{stage}}</td>\
 							<td>{{pissibility}}</td>\
@@ -552,7 +552,7 @@
 			</div>
 			
 			<div>
-				<a href="/workbench/transaction/save.html" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>新建交易</a>
+				<a href="/tran/saveView" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>新建交易</a>
 			</div>
 		</div>
 	</div>
@@ -575,7 +575,7 @@
 					</thead>
 					<tbody id="contactsBody">
 						<tr>
-							<td><a href="../contacts/detail.html" style="text-decoration: none;">李四</a></td>
+							<td><a href="/contacts/detailView" style="text-decoration: none;">李四</a></td>
 							<td>lisi@bjpowernode.com</td>
 							<td>13543645364</td>
 							<td><a href="javascript:void(0);" data-toggle="modal" data-target="#removeContactsModal" style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>删除</a></td>

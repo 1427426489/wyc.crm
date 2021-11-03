@@ -1,12 +1,11 @@
 package com.dljd.crm.controller;
 
-import com.dljd.crm.beans.Customer;
-import com.dljd.crm.beans.CustomerRemark;
-import com.dljd.crm.beans.Page;
-import com.dljd.crm.beans.User;
+import com.dljd.crm.beans.*;
 import com.dljd.crm.services.CustomerService;
+import com.dljd.crm.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -21,6 +20,8 @@ public class CustomerController {
 
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private TransactionService transactionService;
     @Autowired
     private HttpSession session;
     @Autowired
@@ -81,14 +82,27 @@ public class CustomerController {
     }
 
     @RequestMapping("/detailView")
-    public String detailView(String id){
-        request.setAttribute("id",id);
-        return "forward:/WEB-INF/jsp/workbench/customer/detail.jsp";
+    public String detailView(Model model){
+        //加载阶段和可能性对应关系的Map集合
+        model.addAttribute("stage2possiMap",transactionService.getStage2possiMap());
+        return "workbench/customer/detail";
     }
 
     @RequestMapping("/getRemarks.json")
     @ResponseBody
     public List<CustomerRemark> getRemarks(String id){
         return customerService.getRemarks(id);
+    }
+
+    @RequestMapping("/getContacts.json")
+    @ResponseBody
+    public List<Contacts> getContacts(String id){
+        return customerService.getContacts(id);
+    }
+
+    @RequestMapping("/getTransactions.json")
+    @ResponseBody
+    public List<Transaction> getTransactions(String id){
+        return customerService.getTransactions(id);
     }
 }

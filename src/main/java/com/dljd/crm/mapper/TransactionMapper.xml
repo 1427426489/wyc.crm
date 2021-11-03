@@ -75,6 +75,53 @@
     </select>
 
     <select id="addHistory">
-        insert into tbl_transaction_history(id,stage,amountOfMoney,expectedClosingDate,editTime,editBy,transactionId) values (#{id},#{stage},#{amountOfMoney},#{expectedClosingDate},#{editTime},#{editBy},#{transactionId})
+         insert into tbl_transaction_history(id,stage,amountOfMoney,expectedClosingDate,editTime,editBy,transactionId) values (#{id},#{stage},#{amountOfMoney},#{expectedClosingDate},#{editTime},#{editBy},#{transactionId})
+        <!--insert into tbl_transaction_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="stage != null">
+                stage,
+            </if>
+            <if test="amountOfMoney != null">
+                amountOfMoney,
+            </if>
+            <if test="expectedClosingDate != null">
+                expectedClosingDate,
+            </if>
+            <if test="editTime != null">
+                editTime,
+            </if>
+            <if test="editBy != null">
+                editBy,
+            </if>
+            <if test="transactionId != null">
+                transactionId
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="stage != null">
+                #{stage},
+            </if>
+            <if test="amountOfMoney != null">
+                #{amountOfMoney},
+            </if>
+            <if test="expectedClosingDate != null">
+                #{expectedClosingDate},
+            </if>
+            <if test="editTime != null">
+                #{editTime},
+            </if>
+            <if test="editBy != null">
+                #{editBy},
+            </if>
+            <if test="transactionId != null">
+                #{transactionId}
+            </if>
+        </trim>-->
     </select>
 </mapper>

@@ -75,4 +75,12 @@
     <select id="getIdByName" resultType="java.lang.String">
         select id from tbl_customer where name = #{name}
     </select>
+
+    <select id="getContactsByCustomerId" resultType="com.dljd.crm.beans.Contacts">
+        select * from tbl_contacts where customerId = #{customerId}
+    </select>
+
+    <select id="getTransactionsByCustomerId" resultType="com.dljd.crm.beans.Transaction">
+        select * from tbl_transaction where customerId = #{customerId}
+    </select>
 </mapper>
