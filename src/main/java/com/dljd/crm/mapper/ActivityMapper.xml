@@ -123,4 +123,8 @@
     <delete id="deleteActRemark">
         delete from tbl_marketing_activities_remark where id = #{id}
     </delete>
+
+    <select id="getStageCount" resultType="java.util.Map">
+        select a.name name,count(*) value from tbl_marketing_activities a inner join tbl_transaction t on a.id = t.activityId group by a.name
+    </select>
 </mapper>

@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public interface ActivityService extends BaseService<Activity,String> {
     Page getSome(Page page);
@@ -25,4 +26,6 @@ public interface ActivityService extends BaseService<Activity,String> {
     int deleteActRemark(String id);
 
     List<Activity> getLikeByName(String actName);
+
+    List<Map<String,Object>> getStageCount();
 }

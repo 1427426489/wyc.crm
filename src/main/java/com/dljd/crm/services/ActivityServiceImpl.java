@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ActivityServiceImpl implements ActivityService {
@@ -189,5 +190,10 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public List<Activity> getLikeByName(String actName) {
         return activityMapper.getLikeByName(actName);
+    }
+
+    @Override
+    public List<Map<String, Object>> getStageCount() {
+        return activityMapper.getStageCount();
     }
 }

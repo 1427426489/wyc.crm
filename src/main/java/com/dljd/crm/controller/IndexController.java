@@ -30,4 +30,9 @@ public class IndexController {
     public String transactionChart(){
         return "workbench/chart/transaction/index";
     }
+
+    @RequestMapping("/chart/activity/indexView")
+    public String activityChart(){
+        return "workbench/chart/activity/index";
+    }
 }

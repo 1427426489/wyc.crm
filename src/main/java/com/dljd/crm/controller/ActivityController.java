@@ -164,5 +164,11 @@ public class ActivityController {
         }
         return activities;
     }
+
+    @RequestMapping("/getStageCount.json")
+    @ResponseBody
+    public List<Map<String,Object>> getStageCount(){
+        return activityService.getStageCount();
+    }
 }
 

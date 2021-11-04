@@ -24,4 +24,6 @@ public interface ActivityMapper extends BaseMapper<Activity,String> {
     int deleteActRemark(String id);
 
     List<Activity> getLikeByName(String actName);
+
+    List<Map<String,Object>> getStageCount();
 }
