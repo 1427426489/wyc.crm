@@ -4,6 +4,7 @@ import com.dljd.crm.beans.*;
 import com.dljd.crm.mapper.CustomerMapper;
 import com.dljd.crm.mapper.TransactionMapper;
 import com.dljd.crm.mapper.TypeMapper;
+import com.dljd.crm.mapper.ValueMapper;
 import com.dljd.crm.util.LocalDateTimeUtil;
 import com.dljd.crm.util.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class TransactionServiceImpl implements TransactionService {
     private TypeMapper typeMapper;
     @Autowired
     private CustomerMapper customerMapper;
+    @Autowired
+    private ValueMapper valueMapper;
 
     @Override
     public Page getSome(Page page) {
@@ -50,7 +53,7 @@ public class TransactionServiceImpl implements TransactionService {
         //判断客户是否存在，不存在则新建
         String customerId = customerMapper.getIdByName(transaction.getCustomerName());
         //存在
-        if (customerId != null && !"".equals(customerId)){
+        if (customerId != null && !"".equals(customerId)) {
             transaction.setCustomerId(customerId);
             return transactionMapper.add(transaction);
         }
@@ -87,7 +90,7 @@ public class TransactionServiceImpl implements TransactionService {
         transHistory.setTransactionId(id);
         transactionMapper.addHistory(transHistory);
         //修改交易阶段
-        return transactionMapper.updateStage(id,stage,editBy,nowTime);
+        return transactionMapper.updateStage(id, stage, editBy, nowTime);
     }
 
     //获取阶段和可能性对应关系的Map集合
@@ -96,8 +99,13 @@ public class TransactionServiceImpl implements TransactionService {
         Map<String, String> stage2possiMap = new HashMap<>();
         List<Value> stages = typeMapper.get("stage").getValues();
         for (Value stage : stages) {
-            stage2possiMap.put(stage.getValue(), Integer.toString(stage.getOrderNo()*10));
+            stage2possiMap.put(stage.getValue(), Integer.toString(stage.getOrderNo() * 10));
         }
         return stage2possiMap;
+    }
+
+    @Override
+    public List<Map<String, Object>> getStageCount() {
+        return transactionMapper.getStageCount();
     }
 }

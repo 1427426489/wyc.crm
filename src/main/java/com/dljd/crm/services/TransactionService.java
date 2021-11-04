@@ -20,4 +20,6 @@ public interface TransactionService {
 
     //阶段和可能性的对应关系
     Map<String,String> getStage2possiMap();
+
+    List<Map<String,Object>> getStageCount();
 }

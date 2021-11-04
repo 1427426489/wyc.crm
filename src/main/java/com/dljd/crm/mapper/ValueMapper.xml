@@ -48,4 +48,8 @@
     <update id="update">
         update tbl_dictionary_value set value = #{value},text = #{text},orderNo = #{orderNo},typeCode = #{typeCode} where id = #{id};
     </update>
+
+    <select id="getCountByCode" resultType="int">
+        select count(*) from tbl_dictionary_value where typeCode = #{typeCode}
+    </select>
 </mapper>

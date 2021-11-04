@@ -25,4 +25,9 @@ public class IndexController {
     public String dictionaryIndexView(){
         return "/settings/dictionary/index";
     }
+
+    @RequestMapping("/chart/transaction/indexView")
+    public String transactionChart(){
+        return "workbench/chart/transaction/index";
+    }
 }

@@ -94,4 +94,10 @@ public class TransactionController {
             put("success",true);
         }};
     }
+
+    @RequestMapping("/getStageCount.json")
+    @ResponseBody
+    public List<Map<String,Object>> getStageCount(){
+        return transactionService.getStageCount();
+    }
 }
