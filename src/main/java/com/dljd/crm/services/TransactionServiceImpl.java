@@ -82,7 +82,7 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction transaction = transactionMapper.get(id);
         TransHistory transHistory = new TransHistory();
         transHistory.setId(UUIDUtil.getUUID());
-        transHistory.setStage(stage);
+        transHistory.setStage(transaction.getStage());
         transHistory.setAmountOfMoney(transaction.getAmountOfMoney());
         transHistory.setExpectedClosingDate(transaction.getExpectedClosingDate());
         transHistory.setEditBy(editBy);

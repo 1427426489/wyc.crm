@@ -13,7 +13,7 @@
         select * from tbl_contacts
         <where>
             <if test="name!=null and name != ''">
-                name like '%' #{name} '%'
+                fullName like '%' #{name} '%'
             </if>
         </where>
     </select>
