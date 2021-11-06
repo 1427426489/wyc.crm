@@ -24,7 +24,6 @@ public interface TransactionMapper {
 
     List<TransHistory> getHistory(String id);
 
-    //todo insert有问题
     int addHistory(TransHistory transHistory);
 
     List<Map<String,Object>> getStageCount();

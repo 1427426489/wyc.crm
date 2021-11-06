@@ -88,9 +88,10 @@ public class TransactionServiceImpl implements TransactionService {
         transHistory.setEditBy(editBy);
         transHistory.setEditTime(nowTime);
         transHistory.setTransactionId(id);
-        transactionMapper.addHistory(transHistory);
+        int count = transactionMapper.addHistory(transHistory);
         //修改交易阶段
-        return transactionMapper.updateStage(id, stage, editBy, nowTime);
+        count+=transactionMapper.updateStage(id, stage, editBy, nowTime);
+        return count;
     }
 
     //获取阶段和可能性对应关系的Map集合

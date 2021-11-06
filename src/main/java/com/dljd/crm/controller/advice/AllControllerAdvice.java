@@ -54,12 +54,16 @@ public class AllControllerAdvice {
             request.getRequestDispatcher("/WEB-INF/jsp/err.jsp").forward(request,response);
         }
         return new HashMap<String,Object>(){{
+            put("msg","DML异常");
             put("success",false);
         }};
     }
 
     @ExceptionHandler(Exception.class)
-    public String exceptionAdvice(){
-        return "err";
+    public Map<String,Object> exceptionAdvice(){
+        return new HashMap<String,Object>(){{
+            put("msg","其他异常");
+            put("success",false);
+        }};
     }
 }
